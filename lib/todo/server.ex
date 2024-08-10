@@ -34,7 +34,7 @@ defmodule Todo.Server do
 	end
 
 	@impl true
-	def handle_info({:read_init}, state) do
+	def handle_info(:read_init, state) do
 		{:ok, {state, Todo.Database.get(state) || Todo.List.new}}
 	end
 
