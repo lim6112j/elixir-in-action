@@ -8,7 +8,7 @@ defmodule Todo.Cache do
 	end
 	@impl true
 	def init(_) do
-		Todo.Database.start("./persist/")
+		Todo.Database.start()
 		{:ok, %{}}
 	end
 
