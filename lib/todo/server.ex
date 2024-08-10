@@ -6,7 +6,8 @@ defmodule Todo.Server do
 
 	@impl true
 	def init(server_name) do
-		{:ok, { server_name, Todo.Database.get(server_name) || Todo.List.new } }
+		send(self(), :real_init)
+		{:ok, nil}
 	end
 	def add_entry(todo_server, new_entry) do
 		GenServer.cast(todo_server, {:add_entry, new_entry})
@@ -15,12 +16,14 @@ defmodule Todo.Server do
 	def entries(todo_server, date) do
 		GenServer.call(todo_server, {:entries, date})
 	end
+
 	@impl true
 	def handle_cast({:add_entry, new_entry}, {name, todo_list}) do
 		new_state = Todo.List.add_entry(todo_list, new_entry)
 		Todo.Database.store(name, new_state)
 		{:noreply, {name, new_state}}
 	end
+
 	@impl true
 	def handle_call({:entries, date}, _, todo_list) do
 		{
@@ -28,6 +31,11 @@ defmodule Todo.Server do
 			Todo.List.entries(todo_list, date),
 			todo_list
 		}
+	end
+
+	@impl true
+	def handle_info({:read_init}, state) do
+		{:ok, {state, Todo.Database.get(state) || Todo.List.new}}
 	end
 
 end
