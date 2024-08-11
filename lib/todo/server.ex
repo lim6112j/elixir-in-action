@@ -1,6 +1,7 @@
 defmodule Todo.Server do
 	use GenServer
-	def start(server_name) do
+	def start_link(server_name) do
+		IO.puts "starting todo server for #{server_name}"
 		GenServer.start(__MODULE__, server_name)
 	end
 

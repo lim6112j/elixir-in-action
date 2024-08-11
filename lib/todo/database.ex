@@ -1,7 +1,7 @@
 defmodule Todo.Database do
 	use GenServer
 	@db_folder  "./persist"
-	def start() do
+	def start_link() do
 		GenServer.start(__MODULE__, @db_folder, name: __MODULE__)
 	end
 	def store(key, data) do
@@ -24,7 +24,7 @@ defmodule Todo.Database do
 
 		File.mkdir_p(@db_folder)
 		pid_dict = for index <- 1..3, into: %{} do
-				{:ok, pid} = Todo.DatabaseWorker.start(@db_folder)
+				{:ok, pid} = Todo.DatabaseWorker.start_link(@db_folder)
 				{index-1, pid}
 		end
 		{:ok, pid_dict}
