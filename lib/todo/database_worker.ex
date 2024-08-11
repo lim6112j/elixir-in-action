@@ -3,7 +3,7 @@ defmodule Todo.DatabaseWorker do
 
 	def start_link({db_folder, worker_id}) do
 		IO.puts "Starting the database worker #{worker_id}"
-		GenServer.start(__MODULE__, db_folder, name: via_tuple(worker_id))
+		GenServer.start_link(__MODULE__, db_folder, name: via_tuple(worker_id))
 	end
 	def store(worker_id, key, data) do
 		GenServer.cast(via_tuple(worker_id), {:store, key, data})

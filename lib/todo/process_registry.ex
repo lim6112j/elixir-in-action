@@ -6,10 +6,10 @@ defmodule Todo.ProcessRegistry do
 	end
 
 	def deregister_pid(process_registry, pid) do
-		process_registry
+		key = process_registry
 		|> Enum.find(fn {_key, val} -> val == pid  end)
 		|> elem(0)
-		|> Map.pop(process_registry)
+		Map.pop(process_registry, key)
 		|> elem(1)
 	end
 	def register_name(key, pid) do
@@ -67,6 +67,7 @@ defmodule Todo.ProcessRegistry do
 		}
 	end
 	def handle_info({:DOWN, _, :process, pid, _}, process_registry) do
+		Process.exit(pid, :normal)
 		{:noreply, deregister_pid(process_registry, pid)}
 	end
 
