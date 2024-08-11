@@ -9,8 +9,6 @@ defmodule Todo.Cache do
 	end
 	@impl true
 	def init(_) do
-		IO.puts "Starting Database Server"
-		Todo.Database.start_link()
 		{:ok, %{}}
 	end
 
