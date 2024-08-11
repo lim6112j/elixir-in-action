@@ -20,19 +20,20 @@ defmodule Todo.ProcessRegistry do
 	end
 
 	def whereis_name(key) do
+		IO.puts "whereis_name called #{inspect(key)}"
 		GenServer.call(__MODULE__, {:whereis_name, key})
 	end
 
-	def send(key, message) do
-		IO.puts "via key = #{key}, message=#{message}"
-		case whereis_name(key) do
-			:undefined -> {:badarg, {key, message}}
-			pid ->
-				Kernel.send(pid, message)
-				pid
-		end
+	# def send(key, message) do
+	# 	IO.puts "via key = #{key}, message=#{message}"
+	# 	case whereis_name(key) do
+	# 		:undefined -> {:badarg, {key, message}}
+	# 		pid ->
+	# 			Kernel.send(pid, message)
+	# 			pid
+	# 	end
 
-	end
+	# end
 
 
 	# callbacks
