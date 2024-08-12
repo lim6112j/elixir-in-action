@@ -39,6 +39,8 @@ defmodule Todo.DatabaseWorker do
 	end
 
 	defp file_name(db_folder, key) do
-		"#{db_folder}/#{key}"
+		keyname = List.keyfind(key, :name, 0) |> elem(1) |> elem(2)
+		IO.puts "maybe bug here ? #{keyname}"
+		"#{db_folder}/#{keyname}"
 	end
 end

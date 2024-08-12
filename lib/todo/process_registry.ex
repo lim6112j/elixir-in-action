@@ -13,6 +13,7 @@ defmodule Todo.ProcessRegistry do
 		|> elem(1)
 	end
 	def register_name(key, pid) do
+		IO.puts "registering name in process registry : #{inspect(key)}"
 		GenServer.call(__MODULE__, {:register_name, key, pid})
 	end
 	def unregister_name(key) do
