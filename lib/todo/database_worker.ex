@@ -6,17 +6,20 @@ defmodule Todo.DatabaseWorker do
 		GenServer.start_link(__MODULE__, db_folder, name: via_tuple(worker_id))
 	end
 	def store(worker_id, key, data) do
-		IO.puts "databaseworker.store key: #{inspect(key)}"
-		GenServer.cast(via_tuple(worker_id), {:store, key, data})
+		pid = whereis(worker_id)
+		IO.puts "databaseworker.store key: #{inspect(key)}, whereis(key) #{inspect(pid)}"
+		GenServer.cast(pid, {:store, key, data})
 	end
 	def get(worker_id,key) do
-		GenServer.call(via_tuple(worker_id), {:get, key})
+		GenServer.call(whereis(worker_id), {:get, key})
 	end
 
 	def via_tuple(worker_id) do
-#		Todo.ProcessRegistry.via_tuple({__MODULE__, worker_id})
 		{:via, Todo.ProcessRegistry, "hello", "this is message"}
 		{:via, Todo.ProcessRegistry, {:database_worker, worker_id}}
+	end
+	def whereis(worker_id) do
+		Todo.ProcessRegistry.whereis_name({:database_worker, worker_id})
 	end
 
 	# callbacks
