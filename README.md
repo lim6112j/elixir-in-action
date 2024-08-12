@@ -33,6 +33,6 @@ Todo.ProcessRegistry.whereis_name({:database_worker, 2}) |> Process.exit(:kill)
 
 Todo.Server.entries(bobs_list, {2013,12,19})
 
-Todo.Server.add_entry(bobs_list,%{id: 2, date: {2024,8,14}, title: "Engineer"})
+Todo.Server.add_entry(bobs_list,%{date: {2024,8,14}, title: "Engineer"})
 
 Todo.Server.entries(bobs_list, nil)

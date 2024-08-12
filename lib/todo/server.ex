@@ -2,7 +2,7 @@ defmodule Todo.Server do
 	use GenServer
 	def start_link(server_name) do
 		IO.puts "starting todo server for #{server_name}"
-		GenServer.start_link(__MODULE__, name: via_tuple(server_name))
+		GenServer.start_link(__MODULE__,server_name, name: via_tuple(server_name))
 	end
 
 	@impl true
@@ -10,6 +10,7 @@ defmodule Todo.Server do
 		{:ok, {server_name, nil}, {:continue, :init}}
 	end
 	def add_entry(todo_server, new_entry) do
+		IO.puts "Todo.Server.add_entry argument, new_entry : #{inspect(new_entry)}"
 		GenServer.cast(todo_server, {:add_entry, new_entry})
 	end
 
@@ -21,13 +22,14 @@ defmodule Todo.Server do
 		{:via, Todo.ProcessRegistry, name}
 	end
 	def whereis(name) do
-		Todo.ProcessRegistry.whereis_name({:todo_server, name})
+		Todo.ProcessRegistry.whereis_name(name)
 	end
 
 	@impl true
 	def handle_cast({:add_entry, new_entry}, {name, todo_list}) do
+		IO.puts "Todo.Server handle_cast: add_entry , name = #{inspect(name)}"
 		new_state = Todo.List.add_entry(todo_list, new_entry)
-		Todo.Database.store(name, new_state)
+		Todo.Database.store(name, new_entry)
 		{:noreply, {name, new_state}}
 	end
 

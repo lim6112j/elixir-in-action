@@ -6,6 +6,7 @@ defmodule Todo.DatabaseWorker do
 		GenServer.start_link(__MODULE__, db_folder, name: via_tuple(worker_id))
 	end
 	def store(worker_id, key, data) do
+		IO.puts "databaseworker.store key: #{inspect(key)}"
 		GenServer.cast(via_tuple(worker_id), {:store, key, data})
 	end
 	def get(worker_id,key) do
@@ -25,6 +26,7 @@ defmodule Todo.DatabaseWorker do
 	end
 
 	def handle_cast({:store, key, data},  db_folder) do
+		IO.puts "databaseworker handle_cast db_folder: #{db_folder}, key: #{key}"
 		file_name(db_folder, key)
 		|> File.write!(:erlang.term_to_binary(data))
 		{:noreply, db_folder}
@@ -39,8 +41,7 @@ defmodule Todo.DatabaseWorker do
 	end
 
 	defp file_name(db_folder, key) do
-		keyname = List.keyfind(key, :name, 0) |> elem(1) |> elem(2)
-		IO.puts "maybe bug here ? #{keyname}"
-		"#{db_folder}/#{keyname}"
+		IO.puts "maybe bug here ? #{key}"
+		"#{db_folder}/#{key}"
 	end
 end

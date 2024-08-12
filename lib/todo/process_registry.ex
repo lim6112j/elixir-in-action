@@ -19,6 +19,9 @@ defmodule Todo.ProcessRegistry do
 	def unregister_name(key) do
 		GenServer.call(__MODULE__, {:unregister_name, key})
 	end
+	def registries do
+		GenServer.call(__MODULE__, {:registries})
+	end
 
 	def whereis_name(key) do
 		IO.puts "whereis_name called #{inspect(key)}"
@@ -41,6 +44,10 @@ defmodule Todo.ProcessRegistry do
 	def init(_) do
 		{:ok, %{}}
 	end
+	def handle_call({:registries}, _, process_registry) do
+		{:reply, process_registry, process_registry}
+	end
+
 	def handle_call({:register_name, key, pid}, _, process_registry) do
 		case Map.get(process_registry, key) do
 			nil ->
