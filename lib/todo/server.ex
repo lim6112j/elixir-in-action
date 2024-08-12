@@ -13,7 +13,7 @@ defmodule Todo.Server do
 		GenServer.cast(todo_server, {:add_entry, new_entry})
 	end
 
-	def entries(todo_server, date) do
+	def entries(todo_server, date \\ nil) do
 		GenServer.call(todo_server, {:entries, date})
 	end
 
