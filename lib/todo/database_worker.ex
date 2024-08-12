@@ -14,6 +14,7 @@ defmodule Todo.DatabaseWorker do
 
 	def via_tuple(worker_id) do
 #		Todo.ProcessRegistry.via_tuple({__MODULE__, worker_id})
+		{:via, Todo.ProcessRegistry, "hello", "this is message"}
 		{:via, Todo.ProcessRegistry, {:database_worker, worker_id}}
 	end
 
