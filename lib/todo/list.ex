@@ -13,9 +13,13 @@ defmodule Todo.List do
 		%Todo.List{todo_list | entries: new_entries, next_id: todo_list.next_id + 1}
 	end
 	def entries(todo_list, date) do
-		todo_list.entries
-		|> Map.values()
-		|> Enum.filter(fn entry -> entry.date == date end)
+		case date do
+			nil -> todo_list.entries |> Map.values()
+			_ ->
+				todo_list.entries
+				|> Map.values()
+				|> Enum.filter(fn entry -> entry.date == date end)
+		end
 	end
 
 end
