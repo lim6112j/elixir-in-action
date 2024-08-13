@@ -4,7 +4,7 @@ defmodule Todo.List do
 		Enum.reduce(
 			entries,
 			%Todo.List{},
-			&add_entry(&1, &2)
+			&add_entry(&2, &1)
 		)
 	end
 	def add_entry(todo_list, entry) do

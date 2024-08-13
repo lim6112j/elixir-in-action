@@ -1,5 +1,5 @@
 defmodule Todo.Server do
-	use GenServer
+	use GenServer, restart: :temporary
 	def start_link(server_name) do
 		IO.puts "starting todo server for #{server_name}"
 		GenServer.start_link(__MODULE__,server_name, name: via_tuple(server_name))
@@ -27,14 +27,15 @@ defmodule Todo.Server do
 
 	@impl true
 	def handle_cast({:add_entry, new_entry}, {name, todo_list}) do
-		IO.puts "Todo.Server handle_cast: add_entry , name = #{inspect(name)}"
+		IO.puts "Todo.Server handle_cast: add_entry , todo_list = #{inspect(todo_list)}"
 		new_state = Todo.List.add_entry(todo_list, new_entry)
-		Todo.Database.store(name, new_entry)
+		Todo.Database.store(name, new_state)
 		{:noreply, {name, new_state}}
 	end
 
 	@impl true
 	def handle_call({:entries, date}, _, {name, todo_list}) do
+		IO.puts "current todo_list : #{inspect(todo_list)}"
 		{
 			:reply,
 			Todo.List.entries(todo_list, date),
