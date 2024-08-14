@@ -32,13 +32,10 @@ defmodule Todo.Web do
 		entries = list_name
 		|> Todo.ProcessRegistry.whereis_name()
 		|> Todo.Server.entries(date)
-		formatted_entries =
-			entries
-		|> Enum.map(&"#{&1.date} #{&1.title}")
-		|> Enum.join("\n")
+
 		conn
-		|> Plug.Conn.put_resp_content_type("text/plain")
-		|> Plug.Conn.send_resp(200, formatted_entries)
+		|> Plug.Conn.put_resp_content_type("application/json")
+		|> Plug.Conn.send_resp(200, Poison.encode!( %{response: entries}))
 	end
 
 end
