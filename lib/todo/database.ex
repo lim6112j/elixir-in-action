@@ -2,33 +2,31 @@ defmodule Todo.Database do
 	use GenServer
 	@pool_size 3
 	@db_folder  "./persist"
-	def start_link do
 
-		# GenServer.start_link(__MODULE__, @db_folder, name: :database_server)
-		Todo.PoolSupervisor.start_link(@db_folder, @pool_size)
-	end
   def child_spec(_) do
-    %{
-      id: __MODULE__,
-      start: {__MODULE__, :start_link, []},
-      type: :supervisor
-    }
+		File.mkdir_p!(@db_folder)
+		:poolboy.child_spec(__MODULE__, poolboy_config(),[@db_folder])
   end
+	defp poolboy_config do
+		[
+			name: {:local, __MODULE__},
+			worker_module: Todo.DatabaseWorker,
+			size: @pool_size,
+		]
+	end
+
 	def store(key, data) do
-		key
-		|> choose_worker()
-		|> Todo.DatabaseWorker.store(key, data)
+		:poolboy.transaction(__MODULE__, fn worker_pid->
+			Todo.DatabaseWorker.store(worker_pid, key, data)
+		end)
 	end
 	def get(key) do
-		key
-		|> choose_worker()
-		|> Todo.DatabaseWorker.get(key)
-
-	end
-
-	defp choose_worker(key) do
-		# GenServer.call(:database_server, {:choose_worker, key})
-		:erlang.phash2(key, @pool_size) + 1
+		:poolboy.transaction(
+			__MODULE__,
+			fn worker_pid ->
+				Todo.DatabaseWorker.get(worker_pid, key)
+			end
+		)
 	end
 
 	def init(@db_folder) do
