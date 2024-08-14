@@ -1,0 +1,8 @@
+:host = localhost:5454
+
+:jType = application/json
+:form = application/x-www-form-urlencoded
+# inavi post api - not working
+POST http://:host/add_entry?list=alice's list&date=2012-01-01&title=Ben
+#
+GET http://:host/entries?list=alice's list&date=2012-01-01
