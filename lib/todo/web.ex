@@ -14,7 +14,8 @@ defmodule Todo.Web do
 		{:ok, nil}
 	end
 	post "/add_entry" do
-		conn = Plug.Conn.fetch_query_params(conn)
+		{:ok, _, conn} = Plug.Conn.read_body(conn)
+		IO.puts "\n encoded body : #{inspect(conn.params)}"
 		list_name = Map.fetch!(conn.params,"list")
 		title = Map.fetch!(conn.params, "title")
 		date = Date.from_iso8601!(Map.fetch!(conn.params, "date"))
